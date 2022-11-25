@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NinjaMan</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .row {
+            line-height: 0;
+
+        }
+
+        .wall {
+            background-color: blueviolet;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+        }
+
+        .sushi {
+            background-color: black;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            background-image: url('sushi.png');
+            background-size: contain;
+        }
+
+        .onigiri {
+            background-color: black;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            background-image: url('onigiri.png');
+            background-size: contain;
+        }
+
+        .blank {
+            background-color: rgb(0, 0, 0);
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+        }
+
+        #score {
+            background-color: aquamarine;
+            width: 400px;
+            height: 40px;
+            position: absolute;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        #ninja {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            background-image: url('ninja.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="world"></div>
+    <div id="ninja"></div>
+    <div id="score">Puntaje: 0</div>
+</body>
+<script type="text/javascript">
+    var world = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 3, 0, 0, 0, 1, 0, 1],
+        [1, 1, 0, 1, 1, 1, 2, 0, 0, 1],
+        [1, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+        [1, 2, 1, 0, 1, 3, 0, 0, 0, 1],
+        [1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+        [1, 0, 1, 3, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 1, 1, 0, 2, 0, 1],
+        [1, 2, 1, 0, 0, 0, 0, 1, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ];
+
+    var worldDict = {
+        0: 'blank',
+        1: 'wall',
+        2: 'sushi',
+        3: 'onigiri'
+    };
+
+    function drawWorld() {
+        output = "";
+
+        for (var row = 0; row < world.length; row++) {
+            output += "<div class='row'>";
+            for (var x = 0; x < world[row].length; x++) {
+                output += "<div class='" + worldDict[world[row][x]] + "'></div>";
+            }
+        }
+
+        document.getElementById('world').innerHTML = output;
+    }
+
+    var ninja = {
+        x: 1,
+        y: 1
+    };
+
+    function drawNinja() {
+        document.getElementById('ninja').style.left = ninja.x * 40 + "px";
+        document.getElementById('ninja').style.top = ninja.y * 40 + "px";
+    }
+
+    var scoreVar = 0;
+    function eatSushi() {
+        scoreVar += 10;
+        document.getElementById('score').innerHTML = 'Puntaje: ' + scoreVar;
+    }
+
+    document.onkeydown = function (e) {
+
+        if (scoreVar == 70) {
+            document.getElementById('score').innerHTML = 'You Win!';
+        }
+
+        if (e.keyCode == 37) { // Izquierda
+            if (world[ninja.y][ninja.x - 1] != 1) {
+                ninja.x--;
+                if (world[ninja.y][ninja.x] == 2 || world[ninja.y][ninja.x] == 3) {
+                    world[ninja.y][ninja.x] = 0;
+                    eatSushi();
+                }
+            }
+        }
+        else if (e.keyCode == 39) { // Derecha
+            if (world[ninja.y][ninja.x + 1] != 1) {
+                ninja.x++;
+                if (world[ninja.y][ninja.x] == 2 || world[ninja.y][ninja.x] == 3) {
+                    world[ninja.y][ninja.x] = 0;
+                    eatSushi();
+                }
+            }
+
+        }
+        else if (e.keyCode == 40) { // Abajo
+            if (world[ninja.y + 1][ninja.x] != 1) {
+                ninja.y++;
+                if (world[ninja.y][ninja.x] == 2 || world[ninja.y][ninja.x] == 3) {
+                    world[ninja.y][ninja.x] = 0;
+                    eatSushi();
+                }
+            }
+        }
+        else if (e.keyCode == 38) { //Arriba
+            if (world[ninja.y - 1][ninja.x] != 1) {
+                ninja.y--;
+                if (world[ninja.y][ninja.x] == 2 || world[ninja.y][ninja.x] == 3) {
+                    world[ninja.y][ninja.x] = 0;
+                    eatSushi();
+                }
+            }
+        }
+        drawNinja();
+        drawWorld();
+    }
+    drawWorld();
+</script>
+
+</html>
